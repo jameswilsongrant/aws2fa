@@ -60,6 +60,7 @@ if __name__ == '__main__':
     if ARGS.mfa:
         CONFIG[ARGS.profile]['mfa'] = ARGS.mfa
         write_config()
+        print("Wrote " + ARGS.mfa + " device to profile " + ARGS.profile)
 
     # Try to read our MFA device from the config
     # If not found list out any found assigned to our account
@@ -78,10 +79,13 @@ if __name__ == '__main__':
             print(MFA_DEVICES)
         exit(1)
 
+    # If we haven't been passed an MFA code tell the user
     if not ARGS.mfa_code:
         print("MFA device is assigned but no code provided.")
         print("Pass the code from your MFA device with --mfa_code")
         exit(1)
+
+    # Populate a _sts version of the users profile and write it to the config
     TOKEN = get_sts_token(mfa=MFA, mfa_code=ARGS.mfa_code)
     CONFIG.remove_section(ARGS.profile + "_sts")
     CONFIG.add_section(ARGS.profile + "_sts")
@@ -92,5 +96,8 @@ if __name__ == '__main__':
     CONFIG[ARGS.profile +
            "_sts"]['aws_session_token'] = TOKEN['Credentials']['SessionToken']
     write_config()
+
+    # We're done, tell the user what to do next
     print("Session token written successfully to profile",
           ARGS.profile + "_sts", "for", STS_DURATION, "seconds")
+    print("ex: aws --profile " + ARGS.profile + "_sts s3 ls")

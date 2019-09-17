@@ -38,7 +38,8 @@ Assigned virtual MFA devices. Pass one of these to aws2fa with the --mfa option
 ```
 Store the MFA arn
 ```
-$ aws2fa --profile username --mfa arn:aws:iam::1234567890:mfa/username
+$ ./aws2fa --profile username --mfa arn:aws:iam::1234567890:mfa/username
+Wrote arn:aws:iam::1234567890:mfa/username device to profile username
 MFA device is assigned but no code provided.
 Pass the code from your MFA device with --mfa_code
 ```
